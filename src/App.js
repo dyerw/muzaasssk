@@ -16,7 +16,7 @@ class App extends Component {
   render() {
     return (
      <div>
-        <ReviewStream reviews={this.props.reviews} />
+        <ReviewStream {...this.props} />
      </div>
     );
   }
@@ -24,7 +24,8 @@ class App extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    reviews: state.app.reviews
+    reviews: state.app.reviews,
+    loadingStream: state.app.loadingStream
   }
 }
 
