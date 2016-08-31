@@ -8,12 +8,30 @@ import {
     put
 } from 'redux-saga/effects';
 import _ from 'lodash';
+import Promise from 'bluebird';
 
 import Api from './Api';
 import * as MusicBrainzApi from './MusicBrainzApi';
 import * as c from './ActionCreators';
 import * as t from './ActionTypes';
 
+function* fetchSuggestions(action) {
+  yield Promise.delay(2000); // debounce
+  console.log("fetching suggestions");
+  try {
+    let albumSuggestions = yield call(MusicBrainzApi.fetchSearch, action.payload.value);
+    albumSuggestions = albumSuggestions['release-groups'].map(r => {
+      return {
+        id: r.id,
+        album: r.title,
+        artist: r['artist-credit'][0].artist.name };
+    });
+
+    yield put(c.receivedAlbumSuggestions(albumSuggestions));
+  } catch (e) {
+      console.error(e);
+  }
+}
 
 function* fetchStream(action) {
     console.log("fetching stream");
@@ -26,17 +44,15 @@ function* fetchStream(action) {
             let data = streamData[i];
             let relatedArtists = yield call(MusicBrainzApi.fetchArtists, data.relatedArtists);
             data.relatedArtists = relatedArtists.map(a => a.name);
-            console.log(relatedArtists);
         }
 
         // Get album art
-        //    const albumArt = yield call(MusicBrainzApi.fetchAlbumArts, streamData.map(d => d.mbid));
+        // const albumArt = yield call(MusicBrainzApi.fetchAlbumArts, streamData.map(d => d.mbid));
 
         const streamDataWithAlbumInfo = streamData.map(d => {
             let albumInfoForData = _.find(albumInfo, x => x.id === d.mbid);
             return _.merge(d, albumInfoForData, {artist: albumInfoForData['artist-credit'][0].name});
         });
-        console.log(streamDataWithAlbumInfo);
         yield put(c.receivedStreamData(streamDataWithAlbumInfo));
     } catch (e) {
         console.error(e);
@@ -45,4 +61,8 @@ function* fetchStream(action) {
 
 export function* fetchStreamSaga() {
     yield * takeEvery(t.FETCH_STREAM_DATA, fetchStream);
+}
+
+export function* albumSuggestionsSaga() {
+   yield * takeLatest(t.REVIEW_EDITOR_ALBUM_SUGGESTIONS_REQUESTED, fetchSuggestions);
 }

@@ -37,3 +37,7 @@ export const fetchAlbumArts = (mbidAlbums) => {
     });
 };
 
+export const fetchSearch = (searchTerm) => {
+    return fetch(`${musicbrainzHost}/ws/2/release-group/?query=release%3A${searchTerm}&fmt=json`)
+        .then(response => response.json());
+}

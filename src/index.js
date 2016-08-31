@@ -14,6 +14,7 @@ const sagaMiddleware = createSagaMiddleware()
 let store = createStore(reducer, applyMiddleware(sagaMiddleware));
 
 sagaMiddleware.run(sagas.fetchStreamSaga);
+sagaMiddleware.run(sagas.albumSuggestionsSaga);
 
 ReactDOM.render(
   <Provider store={store}><App /></Provider>,
