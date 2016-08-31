@@ -52,3 +52,10 @@ export const clearAlbumSuggestions = () => {
     type: t.CLEAR_ALBUM_SUGGESTIONS
   }
 }
+
+export const receivedSelectedAlbumInfo = (info) => {
+  return {
+    type: t.RECEIVED_SELECTED_ALBUM_INFO,
+    payload: { info }
+  }
+}

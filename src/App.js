@@ -19,6 +19,7 @@ class App extends Component {
     let reviewEditor = null;
     if (this.props.reviewEditorShowing) {
       reviewEditor = <ReviewEditor albumSuggestions={this.props.albumSuggestions}
+                                   selectedAlbumInfo={this.props.selectedAlbumInfo}
                                    reviewEditorAlbumSelected={this.props.reviewEditorAlbumSelected}
                                    loadingAlbumSuggestions={this.props.loadingAlbumSuggestions}
                                    requestAlbumSuggestions={this.props.requestAlbumSuggestions}

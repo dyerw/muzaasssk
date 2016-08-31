@@ -25,16 +25,8 @@ export const fetchAlbums = (mbidAlbums) => {
     });
 };
 
-export const fetchAlbumArt = (mbidAlbum) => {
-    return fetch(coverArtArchiveHost + "/release-group/" + mbidAlbum)
-        .then(response => response.json());
-};
-
-export const fetchAlbumArts = (mbidAlbums) => {
-    return Promise.map(mbidAlbums, mbid => {
-        console.log("fetching album art");
-        return fetchAlbumArt(mbid);
-    });
+export const getAlbumArtUrl = (mbidAlbum) => {
+    return coverArtArchiveHost + "/release-group/" + mbidAlbum + "/front.jpg";
 };
 
 export const fetchSearch = (searchTerm) => {

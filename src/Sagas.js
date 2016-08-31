@@ -24,7 +24,9 @@ function* fetchSuggestions(action) {
       return {
         id: r.id,
         album: r.title,
-        artist: r['artist-credit'][0].artist.name };
+        artist: r['artist-credit'][0].artist.name,
+        albumArtUrl: MusicBrainzApi.getAlbumArtUrl(r.id)
+      };
     });
 
     yield put(c.receivedAlbumSuggestions(albumSuggestions));
@@ -59,10 +61,27 @@ function* fetchStream(action) {
     }
 }
 
+function* fetchAlbumInformation(action) {
+    let mbid = action.payload.suggestion.id;
+    const albumInfo = yield call(MusicBrainzApi.fetchAlbum, mbid);
+    console.log(albumInfo)
+    const albumArtUrl = MusicBrainzApi.getAlbumArtUrl(mbid);
+    const enrichedAlbumInfo = {
+      ...action.payload.suggestion,
+      date: albumInfo['first-release-date'],
+      albumArtUrl: albumArtUrl
+    }
+    yield put(c.receivedSelectedAlbumInfo(enrichedAlbumInfo));
+}
+
 export function* fetchStreamSaga() {
     yield * takeEvery(t.FETCH_STREAM_DATA, fetchStream);
 }
 
 export function* albumSuggestionsSaga() {
    yield * takeLatest(t.REVIEW_EDITOR_ALBUM_SUGGESTIONS_REQUESTED, fetchSuggestions);
+}
+
+export function* albumInformationSaga() {
+  yield * takeLatest(t.REVIEW_EDITOR_ALBUM_SELECTED, fetchAlbumInformation);
 }

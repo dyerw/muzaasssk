@@ -10,7 +10,8 @@ const initialState = {
     reviewEditorShowing: false,
     loadingAlbumSuggestions: false,
     albumSuggestions: [],
-    reviewEditorAlbumValue: ""
+    reviewEditorAlbumValue: "",
+    selectedAlbumInfo: null
 }
 
 const AppReducer = (state = initialState, {
@@ -57,10 +58,16 @@ const AppReducer = (state = initialState, {
             }
 
         case t.CLEAR_ALBUM_SUGGESTIONS:
-          return {
-            ...state,
-            albumSuggestions: []
-          }
+            return {
+              ...state,
+              albumSuggestions: []
+            }
+
+        case t.RECEIVED_SELECTED_ALBUM_INFO:
+            return {
+              ...state,
+              selectedAlbumInfo: payload.info
+            }
 
         default:
             return state;
